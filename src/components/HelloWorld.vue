@@ -1,6 +1,8 @@
 <template>
   <div class="hello">
+    <b-alert variant="success" show>Success Alert</b-alert>
     <h1>{{ msg }}</h1>
+    <h1>{{ apiMessage }}</h1>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -31,11 +33,39 @@
 </template>
 
 <script>
+
+import Vue from 'vue'
+
 export default {
   name: 'HelloWorld',
   props: {
-    msg: String
-  }
+    msg: String,
+  },
+  data () {
+    return { 
+      apiMessage: String
+    }
+  },
+  methods:  {
+    
+  },
+  mounted: function () {
+    Vue.prototype.$http.get(`https://localhost:5001/api/values`, {
+        headers: { 
+          "Content-Type": "application/json",
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Expires': 'Mon, 26 Jul 1997 05:00:00 GMT',          
+          'Accept': 'application/json, text/plain, */*',
+          'Accept-Language': 'en-US'
+        }
+      }).then(response => {        
+        this.apiMessage = response.data
+      })
+      .catch(error => {
+        console.log(error)
+      })
+    }
 }
 </script>
 

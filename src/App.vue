@@ -6,7 +6,16 @@
 </template>
 
 <script>
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 import HelloWorld from './components/HelloWorld.vue'
+import axios from 'axios'
+import Vue from 'vue'
+import BootstrapVue from 'bootstrap-vue'
+
+Vue.use(BootstrapVue)
+Vue.prototype.$http = axios
 
 export default {
   name: 'app',
