@@ -1,84 +1,128 @@
 <template>
-  <div class="hello">
-    <!-- <b-alert variant="success" show>Success Alert</b-alert> -->
+  <div class="hello" id="weather-container">
     <h1>{{ msg }}</h1>
     <img alt="Vue logo" src="../assets/logo.gif">
-    <div>
+    <WeatherForm :value="searchInputValue" @updated-input-value="updateSearchInputValue"/>
+    <div class="p-5">
       <b-table  id="weather-table" 
                 ref="table" 
                 responsive
                 :busy.sync="isBusy"  
-                :items="weatherProvider" 
+                :items="items" 
                 :fields="fields">
         <template slot="temperature" slot-scope="data">
           {{ Math.round(data.value) }} °C
         </template>
+        <template slot="humidity" slot-scope="data">
+          {{ data.value }} %
+        </template>
         <template slot="atDateTime" slot-scope="data">
           {{ new Date(data.value).toDateString() }}
         </template>
+        <template slot="windSpeed" slot-scope="data">
+          {{ Math.round(data.value) }} mps
+        </template>
       </b-table>
       <Spinner v-if="isLoading"/>
-      <Chart v-if="!isLoading" :chartdata="weatherTemeratures" title="Temperature" :legenddata="legendData"/>
+      <div class="row" v-if="!isLoading">
+        <div class="col-sm-6 p-5 weather-chart">
+            <LineChart :chartdata="temperatureChartData" :options="options"/>
+        </div>
+        <div class="col-sm-6 p-5 weather-chart">
+            <BarChart :chartdata="humidityChartData" :options="options"/>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script>
 
-import Spinner from './Spinner.vue'
-import Chart from './Chart.vue'
+import Spinner from './shared/Spinner.vue'
+import LineChart from './chart/LineChart.vue'
+import BarChart from './chart/BarChart.vue'
+import WeatherForm from './WeatherForm.vue'
 import httpService from '../shared/services/httpService'
 
 export default {
   name: 'Weather',
   components: {
     Spinner,
-    Chart
+    LineChart,
+    BarChart,
+    WeatherForm
   },
   props: {
     msg: String
   },
   data () {
     return { 
-      apiMessage: String,
+      searchInputValue: "London",
       isLoading: true,
       isBusy: false,
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            },
+            gridLines: {
+              display: false
+            }
+          }],
+          xAxes: [ {
+            gridLines: {
+              display: false
+            }
+          }]
+        },
+        legend: {
+          display: true
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      },
+      items: [],
       fields: [
+        {
+          key: 'atDateTime',
+          label: 'Date',
+          sortable: false,
+        },
         {
           key: 'condition',
           label: 'Condition',
-          sortable: true,
+          sortable: false,
         },
         {
           key: 'description',
           label: 'Description',
-          sortable: true,
+          sortable: false,
         },
         {
           key: 'temperature',
           label: 'Temperature',
-          sortable: true,
+          sortable: false,
         },
         {
           key: 'humidity',
           label: 'Humidity',
-          sortable: true,
+          sortable: false,
         },
         {
           key: 'windSpeed',
           label: 'Wind speed',
-          sortable: true,
-        },
-        {
-          key: 'atDateTime',
-          label: 'Date',
-          sortable: true,
+          sortable: false,
         }
       ],
-      weatherTemeratures: [],
-      legendData: []
+      temperatureChartData: {},
+      humidityChartData: {},
     }
   },
   methods:  {
+    updateSearchInputValue(newValue) {
+      this.searchInputValue = newValue;
+      this.fetcWeather()
+    },
     dayFormatter(indexOfDay) {
       switch(indexOfDay) {
         case 1:
@@ -99,18 +143,38 @@ export default {
           return "Unknown"
       }
     },
-    weatherProvider() {
-      console.log('call');
+    fetcWeather() {
+      var paramType = 'city'
+      var paramValue = this.searchInputValue
         this.isBusy = true
-        return httpService.get(`weather/forecast?city=Paris`).then(response => {   
+        httpService.get(`weather/forecast?${paramType}=${paramValue}`).then(response => {  
+          var legendData = response.data.days.map(day => this.dayFormatter(new Date(day.atDateTime).getDay()))
+          
+          this.temperatureChartData = {
+            labels: legendData,
+            datasets: [
+              {
+                label: "Temperature",
+                backgroundColor: '#3399ff',
+                data: response.data.days.map(day => day.temperature)
+              }
+            ]
+          }
 
-          this.weatherTemeratures = response.data.days.map(day => day.temperature);
-          this.legendData = response.data.days.map(day => this.dayFormatter(new Date(day.atDateTime).getDay()));
-
+          this.humidityChartData = {
+            labels: legendData,
+            datasets: [
+              {
+                label: "Humimidity",
+                backgroundColor: '#3399ff',
+                data: response.data.days.map(day => day.humidity)
+              }
+            ]
+          }
+          
           this.isLoading = false
           this.isBusy = false
-
-          return(response.data.days || []);
+          this.items = response.data.days || []
         })
         .catch(error => {
           console.log(error)
@@ -121,8 +185,8 @@ export default {
       },
   },
   mounted: function () {
-
-    }
+    this.fetcWeather()
+  }
 }
 </script>
 
@@ -141,5 +205,9 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.weather-chart {
+  
 }
 </style>

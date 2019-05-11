@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <Weather msg="Welcome to Forecast"/>
+    <Weather msg="5 days Forecast"/>
+    <Footer/>
   </div>
 </template>
 
@@ -9,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import Weather from './components/Weather.vue'
+import Footer from './components/shared/Footer.vue'
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 
@@ -17,7 +19,8 @@ Vue.use(BootstrapVue)
 export default {
   name: 'app',
   components: {
-    Weather
+    Weather,
+    Footer
   }
 }
 </script>
