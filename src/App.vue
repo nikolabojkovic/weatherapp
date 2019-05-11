@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.gif">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Weather msg="Welcome to Forecast"/>
   </div>
 </template>
 
@@ -9,7 +8,7 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-import HelloWorld from './components/HelloWorld.vue'
+import Weather from './components/Weather.vue'
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 
@@ -18,7 +17,7 @@ Vue.use(BootstrapVue)
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Weather
   }
 }
 </script>
