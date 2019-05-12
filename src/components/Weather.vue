@@ -1,8 +1,15 @@
 <template>
   <div class="container" id="weather-container">
-    <WeatherForm :value="searchInputValue" @updated-input-value="updateSearchInputValue"/>
-    <h4 class="m-4 text-uppercase">Current weather</h4>
+    <WeatherForm :value="searchCityValue" 
+                 @updated-input-value="updateSearchCityValue"
+                 placeholder="Enter city name"
+                 buttonText="Search city"/>
+    <WeatherForm :value="searchZipCodeValue" 
+                 @updated-input-value="updateSearchZipCodeValue"
+                 placeholder="Enter zip code"
+                 buttonText="Search zip code"/>
     <div id="current-weather" v-if="!isLoading">
+      <h4 class="m-4 text-uppercase">Current weather <span>{{ this.city }}</span> </h4>
       <div class="temp-container">
         <img width="170" height="170" v-bind:src="'http://openweathermap.org/img/w/' + currentWeather.icon + '.png'"/>
         <span id="temperature">
@@ -15,7 +22,7 @@
         <div>Wind speed {{ this.currentWeather.windSpeed }} m/s </div>
       </div>
     </div>
-    <h4 class="m-4 text-uppercase">next 5 days</h4>
+    <h4 class="m-4 text-uppercase" v-if="!isLoading">next 5 days</h4>
     <div class="pl-2 pr-2" id="forecast">
       <b-table  id="forecast-table" 
                 ref="table" 
@@ -75,7 +82,10 @@ export default {
   },
   data () {
     return { 
-      searchInputValue: "London",
+      searchCityValue: "London",
+      searchZipCodeValue: "",
+      searchValue: "London",
+      searchParam: "city",
       isLoading: true,
       isBusy: false,
       options: {
@@ -137,28 +147,28 @@ export default {
       ],
       lineChartData: {},
       barChartData: {},
-      currentWeather: {}
+      currentWeather: {},
+      city: String
     }
   },
   methods:  {
     fetcWeather() {
       this.isLoading = true;
       this.isBusy = true
-      var paramType = 'city'
-      var paramValue = this.searchInputValue 
 
-      httpService.get(`weather/current?${paramType}=${paramValue}`)
+      httpService.get(`weather/current?${this.searchParam}=${this.searchValue}`)
                  .then(response => {       
         this.currentWeather = response.data || []
-        console.log(this.currentWeather)
       })
          
-      httpService.get(`weather/forecast?${paramType}=${paramValue}`)
+      httpService.get(`weather/forecast?${this.searchParam}=${this.searchValue}`)
                  .then(response => {  
-        this.updateChart(response);          
+        this.city = response.data.city           
+        this.items = response.data.days || []
+        this.updateChart(response);     
+
         this.isLoading = false
         this.isBusy = false
-        this.items = response.data.days || []
       })
       .catch(error => {
         console.log(error)
@@ -187,8 +197,16 @@ export default {
           return "Unknown"
       }
     },
-    updateSearchInputValue(newValue) {
-      this.searchInputValue = newValue;
+    updateSearchCityValue(newValue) {
+      this.searchCityValue = newValue
+      this.searchValue = newValue
+      this.searchParam = 'city'
+      this.fetcWeather()
+    },
+    updateSearchZipCodeValue(newValue) {
+      this.searchZipCodeValue = newValue
+      this.searchValue = newValue
+      this.searchParam = 'zipCode'
       this.fetcWeather()
     },
     updateChart(response) {
