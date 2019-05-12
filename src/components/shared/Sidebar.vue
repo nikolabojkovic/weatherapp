@@ -1,0 +1,121 @@
+<template>
+
+    <div class="wrapper" v-if="show">
+        <transition name="slide-toggle">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="container-fluid">
+            <div class="row sidebar-header pt-2">
+                <h3 class="col-12 text-center">History</h3>
+            </div>
+            <div class="row separator ml-4 mb-3"></div>
+            <div class="history">
+                <div class="history-item row" v-bind:key="index" v-for="(item, index) in historyValues">
+                    <div class="city float-left">{{ item.city }}</div>
+                    <div class="city-details">
+                        <div class="title"> {{ Math.round(item.temperature) }} °C </div>
+                        <div class="subtitle"> Humidity: {{ item.humidity }} %</div>
+                    </div>                    
+                </div>
+            </div>            
+        </nav>
+        </transition>
+    </div>
+
+</template>
+<script>
+export default {
+  name: 'Sidebar',
+  props: {
+      toggle: Boolean,
+      history: Array 
+  },
+  data() {
+      return { 
+          show: this.toggle,
+          historyValues: []
+      }
+  },
+  watch: {
+    toggle: function(val) {
+      this.show = val
+    },
+    history: function(val) {
+      this.historyValues = val
+    }
+  },
+  mounted: function () {
+    console.log(this.historyValues)
+  }
+}
+</script>
+<style>
+.wrapper {
+    position: absolute;
+    display: flex;
+    width: 100%;
+}
+
+#sidebar {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 999;
+    background: #64befa;
+    color: #fff;
+}
+
+#sidebar a {
+    color: #fff;
+}
+
+.separator {
+    border: 1px solid white;
+    width: 80%;
+}
+
+.slide-toggle-enter-active,
+.slide-toggle-leave-active {
+     transition: all 5s;
+}
+.slide-toggle-enter-active {
+     width: 300px;
+}
+.slide-toggle-enter,
+.slide-toggle-leave-active {
+    width: 0;
+}
+.slide-toggle-leave {
+    width: 30px;
+} 
+
+.history {
+    overflow-y: scroll;
+    height: auto;
+    max-height: 550px;
+}
+
+.history-item {
+    background-color: #45a7e7;
+    margin: 10px;
+    padding: 10px;
+}
+
+.city {
+    display: inline;
+}
+
+.city-details {
+    display: inline;
+}
+
+.title {
+    display: block;
+}
+
+.subtitle {
+    display: block;
+    font-size: 11px;
+}
+</style>

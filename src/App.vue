@@ -1,7 +1,8 @@
 <template>
-  <div id="app">
-    <Header/>
-    <Weather/>
+  <div id="app" class="container-fluid">
+    <Header @toggle-button-pressed="toggle"/>
+    <Sidebar :toggle="toggleSidebar" :history="history"/>
+    <Weather @update-history="updateHistory"/>
     <Footer/>
   </div>
 </template>
@@ -13,6 +14,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Weather from './components/Weather.vue'
 import Header from './components/shared/Header.vue'
 import Footer from './components/shared/Footer.vue'
+import Sidebar from './components/shared/Sidebar.vue'
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 
@@ -20,10 +22,25 @@ Vue.use(BootstrapVue)
 
 export default {
   name: 'app',
+  data() {
+    return {
+      toggleSidebar: false,
+      history: []
+    }
+  },
   components: {
     Weather,
     Header,
-    Footer
+    Footer,
+    Sidebar
+  },
+  methods: {
+    toggle(toggleEvent) {
+      this.toggleSidebar = toggleEvent
+    },
+    updateHistory() {
+      this.history = JSON.parse(localStorage.getItem('history'))
+    }
   }
 }
 </script>

@@ -1,13 +1,13 @@
 <template>
-  <div class="container" id="weather-container">
+  <div class="container-fluid">
     <WeatherForm :value="searchCityValue" 
                  @updated-input-value="updateSearchCityValue"
                  placeholder="Enter city name"
-                 buttonText="Search city"/>
+                 buttonText="Search by city"/>
     <WeatherForm :value="searchZipCodeValue" 
                  @updated-input-value="updateSearchZipCodeValue"
-                 placeholder="Enter zip code"
-                 buttonText="Search zip code"/>
+                 placeholder="Enter zip and country code"
+                 buttonText="Search by zip code"/>
     <h4 class="m-4 text-uppercase">Current weather <span v-if="!isLoading && !currentWeatherError">{{ this.city }}</span> </h4>
     <Spinner v-if="isLoading" text="Loading current weather..."/>
     <div id="current-weather" v-if="!isLoading && !currentWeatherError">
@@ -24,7 +24,7 @@
       </div>
     </div>
     <div v-if="currentWeatherError">No data</div>
-    <h4 class="m-4 text-uppercase" >next 5 days</h4>
+    <h4 class="m-4 text-uppercase" >Next 5 days</h4>
     <div class="pl-2 pr-2" id="forecast">
       <b-table  id="forecast-table" 
                 ref="table" 
@@ -53,11 +53,11 @@
         </template>
       </b-table>
       <Spinner v-if="isLoading" text="Loading charts..."/>
-      <div class="row" v-if="!isLoading && !forecastError" id="foreast-charts">
-        <div class="col-sm-6 p-5">
+      <div class="row" v-if="!isLoading && !forecastError" id="forecast-charts">
+        <div class="col-sm-6 p-3">
             <LineChart id="forecast-temp-chart" :chartdata="lineChartData" :options="options"/>
         </div>
-        <div class="col-sm-6 p-5">
+        <div class="col-sm-6 p-3">
             <BarChart id="forecast-humidity-chart" :chartdata="barChartData" :options="options"/>
         </div>
       </div>
@@ -153,7 +153,8 @@ export default {
       lineChartData: {},
       barChartData: {},
       currentWeather: {},
-      city: String
+      city: String,
+      history: []
     }
   },
   methods:  {
@@ -167,6 +168,7 @@ export default {
                  .then(response => {       
         this.currentWeather = response.data || []
         this.currentWeatherError = null
+        
       })
       .catch(error => {
         console.log(error)
@@ -178,7 +180,14 @@ export default {
                  .then(response => {  
         this.city = response.data.city           
         this.items = response.data.days || []
-        this.updateChart(response);     
+        this.updateChart(response); 
+        this.history = [{
+          city: this.city,
+          temperature: this.currentWeather.temperature,
+          humidity: this.currentWeather.humidity
+        },...this.history ]
+        localStorage.setItem('history', JSON.stringify(this.history));
+        this.$emit('update-history', {})
 
         this.isLoading = false
         this.isBusy = false
@@ -250,6 +259,10 @@ export default {
     }
   },
   mounted: function () {
+    if (JSON.parse(localStorage.getItem('history')).length != 0) {
+       this.history = JSON.parse(localStorage.getItem('history'))
+    }
+
     this.fetcWeather()
   }
 }
@@ -275,7 +288,7 @@ a {
 #temperature {
   font-size: 52px;
   position: relative;
-  right: 30px;
+  right: 10px;
 }
 
 .temp-scale {
