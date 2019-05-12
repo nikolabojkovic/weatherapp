@@ -4,10 +4,10 @@
 
     </div>
     <div class="col-md-6 pl-4 pr-4">
-        <b-input-group class="mt-3">
+        <b-input-group class="mt-2">
             <b-form-input v-model="inputValue"></b-form-input>
             <b-input-group-append>
-            <b-button variant="info" v-on:click="submit">Show weather</b-button>
+            <b-button variant="primary" v-on:click="submit">Show weather</b-button>
             </b-input-group-append>
         </b-input-group>
     </div>
@@ -36,4 +36,7 @@ export default {
 }
 </script>
 <style>
+.row {
+    width: 100%;
+}
 </style>

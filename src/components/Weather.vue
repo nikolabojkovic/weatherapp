@@ -1,15 +1,28 @@
 <template>
   <div class="hello" id="weather-container">
-    <h1>{{ msg }}</h1>
-    <img alt="Vue logo" src="../assets/logo.gif">
+    <h2 class="text-uppercase">Weather</h2>
+    <!-- <img alt="Vue logo" src="../assets/logo.gif"> -->
     <WeatherForm :value="searchInputValue" @updated-input-value="updateSearchInputValue"/>
-    <div class="p-5">
-      <b-table  id="weather-table" 
+    <h4 class="m-4 text-uppercase">Current weather</h4>
+    <div id="current-weather" v-if="!isLoading">
+      <img width="200" height="200" v-bind:src="'http://openweathermap.org/img/w/' + currentWeather.icon + '.png'"/>
+       <span id="temperature">{{ Math.round(this.currentWeather.temperature) }} °C </span>
+      <div>       
+        <div>Humidity {{ this.currentWeather.humidity }} % </div>
+        <div>Wind speed {{ this.currentWeather.windSpeed }} m/s </div>
+      </div>
+    </div>
+    <h4 class="m-4 text-uppercase">next 5 days</h4>
+    <div class="pl-4 pr-4" id="forecast">
+      <b-table  id="forecast-table" 
                 ref="table" 
                 responsive
                 :busy.sync="isBusy"  
                 :items="items" 
                 :fields="fields">
+        <template slot="condition" slot-scope="data">
+          <img v-bind:src="'http://openweathermap.org/img/w/' + data.item.icon + '.png'"/>
+        </template>
         <template slot="temperature" slot-scope="data">
           {{ Math.round(data.value) }} °C
         </template>
@@ -20,16 +33,16 @@
           {{ new Date(data.value).toDateString() }}
         </template>
         <template slot="windSpeed" slot-scope="data">
-          {{ Math.round(data.value) }} mps
+          {{ Math.round(data.value) }} m/s
         </template>
       </b-table>
       <Spinner v-if="isLoading"/>
-      <div class="row" v-if="!isLoading">
-        <div class="col-sm-6 p-5 weather-chart">
-            <LineChart :chartdata="temperatureChartData" :options="options"/>
+      <div class="row" v-if="!isLoading" id="foreast-charts">
+        <div class="col-sm-6 p-5">
+            <LineChart id="forecast-temp-chart" :chartdata="lineChartData" :options="options"/>
         </div>
-        <div class="col-sm-6 p-5 weather-chart">
-            <BarChart :chartdata="humidityChartData" :options="options"/>
+        <div class="col-sm-6 p-5">
+            <BarChart id="forecast-humidity-chart" :chartdata="barChartData" :options="options"/>
         </div>
       </div>
     </div>
@@ -52,7 +65,6 @@ export default {
     WeatherForm
   },
   props: {
-    msg: String
   },
   data () {
     return { 
@@ -114,14 +126,37 @@ export default {
           sortable: false,
         }
       ],
-      temperatureChartData: {},
-      humidityChartData: {},
+      lineChartData: {},
+      barChartData: {},
+      currentWeather: {}
     }
   },
   methods:  {
-    updateSearchInputValue(newValue) {
-      this.searchInputValue = newValue;
-      this.fetcWeather()
+    fetcWeather() {
+      this.isLoading = true;
+      this.isBusy = true
+      var paramType = 'city'
+      var paramValue = this.searchInputValue 
+
+      httpService.get(`weather/current?${paramType}=${paramValue}`)
+                 .then(response => {       
+        this.currentWeather = response.data || []
+        console.log(this.currentWeather)
+      })
+         
+      httpService.get(`weather/forecast?${paramType}=${paramValue}`)
+                 .then(response => {  
+        this.updateChart(response);          
+        this.isLoading = false
+        this.isBusy = false
+        this.items = response.data.days || []
+      })
+      .catch(error => {
+        console.log(error)
+        this.isLoading = false
+        this.isBusy = false
+        return []
+      })
     },
     dayFormatter(indexOfDay) {
       switch(indexOfDay) {
@@ -143,14 +178,14 @@ export default {
           return "Unknown"
       }
     },
-    fetcWeather() {
-      var paramType = 'city'
-      var paramValue = this.searchInputValue
-        this.isBusy = true
-        httpService.get(`weather/forecast?${paramType}=${paramValue}`).then(response => {  
-          var legendData = response.data.days.map(day => this.dayFormatter(new Date(day.atDateTime).getDay()))
+    updateSearchInputValue(newValue) {
+      this.searchInputValue = newValue;
+      this.fetcWeather()
+    },
+    updateChart(response) {
+      var legendData = response.data.days.map(day => this.dayFormatter(new Date(day.atDateTime).getDay()))
           
-          this.temperatureChartData = {
+          this.lineChartData = {
             labels: legendData,
             datasets: [
               {
@@ -161,7 +196,7 @@ export default {
             ]
           }
 
-          this.humidityChartData = {
+          this.barChartData = {
             labels: legendData,
             datasets: [
               {
@@ -171,18 +206,7 @@ export default {
               }
             ]
           }
-          
-          this.isLoading = false
-          this.isBusy = false
-          this.items = response.data.days || []
-        })
-        .catch(error => {
-          console.log(error)
-          this.isLoading = false
-          this.isBusy = false
-          return []
-        })
-      },
+    }
   },
   mounted: function () {
     this.fetcWeather()
@@ -207,7 +231,8 @@ a {
   color: #42b983;
 }
 
-.weather-chart {
-  
+.temperature {
+  font-size: 52px;
+  color: lightgrey;
 }
 </style>

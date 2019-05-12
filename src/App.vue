@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <Weather msg="5 days Forecast"/>
+    <Header/>
+    <Weather/>
     <Footer/>
   </div>
 </template>
@@ -10,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import Weather from './components/Weather.vue'
+import Header from './components/shared/Header.vue'
 import Footer from './components/shared/Footer.vue'
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
@@ -20,6 +22,7 @@ export default {
   name: 'app',
   components: {
     Weather,
+    Header,
     Footer
   }
 }
@@ -32,6 +35,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  width: 100%;
 }
 </style>
