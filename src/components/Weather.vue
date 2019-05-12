@@ -1,25 +1,32 @@
 <template>
-  <div class="hello" id="weather-container">
-    <h2 class="text-uppercase">Weather</h2>
-    <!-- <img alt="Vue logo" src="../assets/logo.gif"> -->
+  <div class="container" id="weather-container">
     <WeatherForm :value="searchInputValue" @updated-input-value="updateSearchInputValue"/>
     <h4 class="m-4 text-uppercase">Current weather</h4>
     <div id="current-weather" v-if="!isLoading">
-      <img width="200" height="200" v-bind:src="'http://openweathermap.org/img/w/' + currentWeather.icon + '.png'"/>
-       <span id="temperature">{{ Math.round(this.currentWeather.temperature) }} °C </span>
+      <div class="temp-container">
+        <img width="170" height="170" v-bind:src="'http://openweathermap.org/img/w/' + currentWeather.icon + '.png'"/>
+        <span id="temperature">
+          {{ Math.round(this.currentWeather.temperature) }} 
+          <span class="temp-scale">°C</span>
+        </span>
+       </div>
       <div>       
         <div>Humidity {{ this.currentWeather.humidity }} % </div>
         <div>Wind speed {{ this.currentWeather.windSpeed }} m/s </div>
       </div>
     </div>
     <h4 class="m-4 text-uppercase">next 5 days</h4>
-    <div class="pl-4 pr-4" id="forecast">
+    <div class="pl-2 pr-2" id="forecast">
       <b-table  id="forecast-table" 
                 ref="table" 
                 responsive
                 :busy.sync="isBusy"  
                 :items="items" 
                 :fields="fields">
+        <div slot="table-busy" class="text-center text-primary my-2">
+          <b-spinner class="align-middle mr-1"></b-spinner>
+          <strong>Loading...</strong>
+        </div>
         <template slot="condition" slot-scope="data">
           <img v-bind:src="'http://openweathermap.org/img/w/' + data.item.icon + '.png'"/>
         </template>
@@ -36,7 +43,7 @@
           {{ Math.round(data.value) }} m/s
         </template>
       </b-table>
-      <Spinner v-if="isLoading"/>
+      <Spinner v-if="isLoading" text="Loading charts..."/>
       <div class="row" v-if="!isLoading" id="foreast-charts">
         <div class="col-sm-6 p-5">
             <LineChart id="forecast-temp-chart" :chartdata="lineChartData" :options="options"/>
@@ -99,6 +106,8 @@ export default {
           key: 'atDateTime',
           label: 'Date',
           sortable: false,
+          thClass: 'd-none d-lg-block',
+          tdClass: 'd-none d-lg-block'
         },
         {
           key: 'condition',
@@ -106,13 +115,13 @@ export default {
           sortable: false,
         },
         {
-          key: 'description',
-          label: 'Description',
+          key: 'temperature',
+          label: 'Temperature',
           sortable: false,
         },
         {
-          key: 'temperature',
-          label: 'Temperature',
+          key: 'description',
+          label: 'Description',
           sortable: false,
         },
         {
@@ -231,8 +240,16 @@ a {
   color: #42b983;
 }
 
-.temperature {
+#temperature {
   font-size: 52px;
-  color: lightgrey;
+  position: relative;
+  right: 30px;
+}
+
+.temp-scale {
+  font-size: 24px;
+  position: relative;
+  bottom: 20px;
+  right: 15px;
 }
 </style>

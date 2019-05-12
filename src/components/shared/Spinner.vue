@@ -1,8 +1,23 @@
 <template>
-    <b-spinner class="spinner" variant="primary" label="Large Spinner"></b-spinner>
+    <div>
+        <b-spinner class="spinner mr-2" variant="primary" label="Large Spinner"></b-spinner>
+        <span class="text-primary">{{ this.text }}</span>
+    </div>
 </template>
+<script>
+export default {
+  name: 'Spinner',
+  props: {
+      text: String
+  },
+  data() {
+      return { 
+      }
+  }
+}
+</script>
 <style>
     .spinner {
-        width: 6rem; height: 6rem;
+        width: 2rem; height: 2rem;
     }
 </style>

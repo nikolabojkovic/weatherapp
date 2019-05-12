@@ -36,7 +36,5 @@ export default {
 }
 </script>
 <style>
-.row {
-    width: 100%;
-}
+
 </style>

@@ -1,12 +1,12 @@
 <template>
     <div id="header">
-        Welcome
+        <span class="text-uppercase font-weight-bold">Welcome to weather forecast</span>
     </div>
 </template>
 <script>
 export default {
   name: 'Header',
-  date() {
+  data() {
       return { 
       }
   }
