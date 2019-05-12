@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <b-spinner class="spinner mr-2" variant="primary" label="Large Spinner"></b-spinner>
-        <span class="text-primary">{{ this.text }}</span>
+    <div class="m-2">
+        <b-spinner class="spinner mr-3" variant="primary" label="Large Spinner"></b-spinner>
+        <strong><span class="text-primary loading-text">{{ this.text }}</span></strong>
     </div>
 </template>
 <script>
@@ -19,5 +19,10 @@ export default {
 <style>
     .spinner {
         width: 2rem; height: 2rem;
+    }
+
+    .loading-text {
+        position: relative;
+        bottom: 6px;
     }
 </style>

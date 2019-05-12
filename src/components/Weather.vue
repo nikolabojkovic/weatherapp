@@ -8,8 +8,9 @@
                  @updated-input-value="updateSearchZipCodeValue"
                  placeholder="Enter zip code"
                  buttonText="Search zip code"/>
-    <div id="current-weather" v-if="!isLoading">
-      <h4 class="m-4 text-uppercase">Current weather <span>{{ this.city }}</span> </h4>
+    <h4 class="m-4 text-uppercase">Current weather <span v-if="!isLoading && !currentWeatherError">{{ this.city }}</span> </h4>
+    <Spinner v-if="isLoading" text="Loading current weather..."/>
+    <div id="current-weather" v-if="!isLoading && !currentWeatherError">
       <div class="temp-container">
         <img width="170" height="170" v-bind:src="'http://openweathermap.org/img/w/' + currentWeather.icon + '.png'"/>
         <span id="temperature">
@@ -22,17 +23,18 @@
         <div>Wind speed {{ this.currentWeather.windSpeed }} m/s </div>
       </div>
     </div>
-    <h4 class="m-4 text-uppercase" v-if="!isLoading">next 5 days</h4>
+    <div v-if="currentWeatherError">No data</div>
+    <h4 class="m-4 text-uppercase" >next 5 days</h4>
     <div class="pl-2 pr-2" id="forecast">
       <b-table  id="forecast-table" 
                 ref="table" 
                 responsive
                 :busy.sync="isBusy"  
                 :items="items" 
-                :fields="fields">
+                :fields="fields"
+                v-if="!forecastError">
         <div slot="table-busy" class="text-center text-primary my-2">
-          <b-spinner class="align-middle mr-1"></b-spinner>
-          <strong>Loading...</strong>
+          <Spinner text="Loading..."/>
         </div>
         <template slot="condition" slot-scope="data">
           <img v-bind:src="'http://openweathermap.org/img/w/' + data.item.icon + '.png'"/>
@@ -51,7 +53,7 @@
         </template>
       </b-table>
       <Spinner v-if="isLoading" text="Loading charts..."/>
-      <div class="row" v-if="!isLoading" id="foreast-charts">
+      <div class="row" v-if="!isLoading && !forecastError" id="foreast-charts">
         <div class="col-sm-6 p-5">
             <LineChart id="forecast-temp-chart" :chartdata="lineChartData" :options="options"/>
         </div>
@@ -59,6 +61,7 @@
             <BarChart id="forecast-humidity-chart" :chartdata="barChartData" :options="options"/>
         </div>
       </div>
+      <div><div v-if="forecastError">No data</div></div>
     </div>
   </div>
 </template>
@@ -87,6 +90,8 @@ export default {
       searchValue: "London",
       searchParam: "city",
       isLoading: true,
+      currentWeatherError: null,
+      forecastError: null,
       isBusy: false,
       options: {
         scales: {
@@ -155,11 +160,19 @@ export default {
     fetcWeather() {
       this.isLoading = true;
       this.isBusy = true
+      this.forecastError = null
+      this.currentWeatherError = null
 
       httpService.get(`weather/current?${this.searchParam}=${this.searchValue}`)
                  .then(response => {       
         this.currentWeather = response.data || []
+        this.currentWeatherError = null
       })
+      .catch(error => {
+        console.log(error)
+        this.isLoading = false
+        this.currentWeatherError = error;
+      });
          
       httpService.get(`weather/forecast?${this.searchParam}=${this.searchValue}`)
                  .then(response => {  
@@ -169,12 +182,13 @@ export default {
 
         this.isLoading = false
         this.isBusy = false
+        this.forecastError = null;
       })
       .catch(error => {
         console.log(error)
         this.isLoading = false
         this.isBusy = false
-        return []
+        this.forecastError = error
       })
     },
     dayFormatter(indexOfDay) {
@@ -216,7 +230,7 @@ export default {
             labels: legendData,
             datasets: [
               {
-                label: "Temperature",
+                label: "Temperature °C",
                 backgroundColor: '#3399ff',
                 data: response.data.days.map(day => day.temperature)
               }
@@ -227,7 +241,7 @@ export default {
             labels: legendData,
             datasets: [
               {
-                label: "Humimidity",
+                label: "Humimidity %",
                 backgroundColor: '#3399ff',
                 data: response.data.days.map(day => day.humidity)
               }
