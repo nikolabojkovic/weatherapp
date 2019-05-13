@@ -1,6 +1,6 @@
 <template>
 
-    <div class="wrapper" v-if="show">
+    <div class="wrapper" v-show="show">
         <transition name="slide-toggle">
         <!-- Sidebar -->
         <nav id="sidebar" class="container-fluid">
@@ -8,7 +8,7 @@
                 <h3 class="col-12 text-center">History</h3>
             </div>
             <div class="row separator ml-4 mb-3"></div>
-            <div class="history">
+            <div  id="history" class="history">
                 <div class="history-item row" v-bind:key="index" v-for="(item, index) in historyValues">
                     <div class="city float-left">{{ item.city }}</div>
                     <div class="city-details">
@@ -44,7 +44,7 @@ export default {
     }
   },
   mounted: function () {
-    console.log(this.historyValues)
+    document.getElementById('history').style.height = (screen.height - 100) + 'px'
   }
 }
 </script>
@@ -77,23 +77,23 @@ export default {
 
 .slide-toggle-enter-active,
 .slide-toggle-leave-active {
-     transition: all 5s;
+     transition: width 2s;
+     -webkit-transition: width 2s;
 }
 .slide-toggle-enter-active {
      width: 300px;
 }
 .slide-toggle-enter,
 .slide-toggle-leave-active {
-    width: 0;
+    width: 0px;
 }
 .slide-toggle-leave {
-    width: 30px;
+    width: 0px;
 } 
 
 .history {
     overflow-y: scroll;
     height: auto;
-    max-height: 550px;
 }
 
 .history-item {

@@ -181,6 +181,7 @@ export default {
         this.city = response.data.city           
         this.items = response.data.days || []
         this.updateChart(response); 
+        
         this.history = [{
           city: this.city,
           temperature: this.currentWeather.temperature,
