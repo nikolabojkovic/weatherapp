@@ -2,7 +2,16 @@
   <div id="app" class="container-fluid">
     <Header @toggle-button-pressed="toggle"/>
     <Sidebar :toggle="toggleSidebar" :history="history"/>
-    <Weather @update-history="updateHistory"/>
+    <WeatherForm :value="searchCityValue" 
+                 @updated-input-value="updateSearchCityValue"
+                 placeholder="Enter city name"
+                 buttonText="Search by city"/>
+    <WeatherForm :value="searchZipCodeValue" 
+                 @updated-input-value="updateSearchZipCodeValue"
+                 placeholder="Enter zip and country code"
+                 buttonText="Search by zip code"/>
+    <CurrentWeather :search="search" @update-history="updateHistory" />
+    <Forecast :search="search"/>
     <Footer/>
   </div>
 </template>
@@ -11,7 +20,9 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-import Weather from './components/Weather.vue'
+import WeatherForm from './components/WeatherForm.vue'
+import CurrentWeather from './components/CurrentWeather.vue'
+import Forecast from './components/Forecast.vue'
 import Header from './components/shared/Header.vue'
 import Footer from './components/shared/Footer.vue'
 import Sidebar from './components/shared/Sidebar.vue'
@@ -25,11 +36,19 @@ export default {
   data() {
     return {
       toggleSidebar: false,
-      history: []
+      history: [],
+      searchCityValue: "London",
+      searchZipCodeValue: "81925,de",
+      search: {
+        type: 'city',
+        value: 'London'
+      }
     }
   },
   components: {
-    Weather,
+    WeatherForm,
+    CurrentWeather,
+    Forecast,
     Header,
     Footer,
     Sidebar
@@ -40,7 +59,21 @@ export default {
     },
     updateHistory() {
       this.history = JSON.parse(localStorage.getItem('history'))
-    }
+    },
+    updateSearchCityValue(newValue) {
+      this.searchCityValue = newValue
+      this.search = {
+        type: 'city',
+        value: newValue
+      }
+    },
+    updateSearchZipCodeValue(newValue) {
+      this.searchZipCodeValue = newValue
+      this.search = {
+        type: 'zipCode',
+        value: newValue
+      }
+    },
   }
 }
 </script>

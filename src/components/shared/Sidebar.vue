@@ -4,11 +4,11 @@
         <transition name="slide-toggle">
         <!-- Sidebar -->
         <nav id="sidebar" class="container-fluid">
-            <div class="row sidebar-header pt-2">
+            <div class="row sidebar-header pt-3">
                 <h3 class="col-12 text-center">History</h3>
             </div>
             <div class="row separator ml-4 mb-3"></div>
-            <div  id="history" class="history">
+            <div id="history" class="history">
                 <div class="history-item row" v-bind:key="index" v-for="(item, index) in historyValues">
                     <div class="city float-left">{{ item.city }}</div>
                     <div class="city-details">
@@ -16,7 +16,12 @@
                         <div class="subtitle"> Humidity: {{ item.humidity }} %</div>
                     </div>                    
                 </div>
-            </div>            
+            </div> 
+            <div class="row mt-2">
+                <div class="col-12 pl-4 pr-4">
+                    <b-button @click="clearHistory" block size="sm" variant="light">Clear</b-button>
+                </div>
+            </div>           
         </nav>
         </transition>
     </div>
@@ -43,8 +48,15 @@ export default {
       this.historyValues = val
     }
   },
+  methods: {
+      clearHistory() {
+          localStorage.removeItem('history')
+          this.historyValues = []
+          this.$emit('update-history', {})
+      }
+  },
   mounted: function () {
-    document.getElementById('history').style.height = (screen.height - 100) + 'px'
+    document.getElementById('history').style.height = (screen.height - 150) + 'px'
   }
 }
 </script>

@@ -47,9 +47,11 @@ export default {
     border: 2px solid white;
     border-radius: 6px;
     position: relative;
-    float: right;
+    /* float: right; */
+    right: 10px;
     bottom: 10px;
 }
+
 .icon-bar {
     width: 30px;
     margin: 6px 0px;

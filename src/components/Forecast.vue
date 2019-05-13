@@ -1,38 +1,14 @@
 <template>
-  <div class="container-fluid">
-    <WeatherForm :value="searchCityValue" 
-                 @updated-input-value="updateSearchCityValue"
-                 placeholder="Enter city name"
-                 buttonText="Search by city"/>
-    <WeatherForm :value="searchZipCodeValue" 
-                 @updated-input-value="updateSearchZipCodeValue"
-                 placeholder="Enter zip and country code"
-                 buttonText="Search by zip code"/>
-    <h4 class="m-4 text-uppercase">Current weather <span v-if="!isLoading && !currentWeatherError">{{ this.city }}</span> </h4>
-    <Spinner v-if="isLoading" text="Loading current weather..."/>
-    <div id="current-weather" v-if="!isLoading && !currentWeatherError">
-      <div class="temp-container">
-        <img width="170" height="170" v-bind:src="'http://openweathermap.org/img/w/' + currentWeather.icon + '.png'"/>
-        <span id="temperature">
-          {{ Math.round(this.currentWeather.temperature) }} 
-          <span class="temp-scale">°C</span>
-        </span>
-       </div>
-      <div>       
-        <div>Humidity {{ this.currentWeather.humidity }} % </div>
-        <div>Wind speed {{ this.currentWeather.windSpeed }} m/s </div>
-      </div>
-    </div>
-    <div v-if="currentWeatherError">No data</div>
+  <div class="container-fluid"> 
     <h4 class="m-4 text-uppercase" >Next 5 days</h4>
     <div class="pl-2 pr-2" id="forecast">
-      <b-table  id="forecast-table" 
+      <b-table  v-if="!forecastError"
+                id="forecast-table" 
                 ref="table" 
                 responsive
                 :busy.sync="isBusy"  
                 :items="items" 
-                :fields="fields"
-                v-if="!forecastError">
+                :fields="fields">
         <div slot="table-busy" class="text-center text-primary my-2">
           <Spinner text="Loading..."/>
         </div>
@@ -70,27 +46,28 @@
 import Spinner from './shared/Spinner.vue'
 import LineChart from './chart/LineChart.vue'
 import BarChart from './chart/BarChart.vue'
-import WeatherForm from './WeatherForm.vue'
+
 import httpService from '../shared/services/httpService'
 
 export default {
-  name: 'Weather',
+  name: 'Forecast',
   components: {
     Spinner,
     LineChart,
-    BarChart,
-    WeatherForm
+    BarChart
   },
   props: {
+     search: { }
+  },
+  watch: {
+    search: function(val) {
+      this.search = val
+     this.fetchData()
+    }
   },
   data () {
     return { 
-      searchCityValue: "London",
-      searchZipCodeValue: "",
-      searchValue: "London",
-      searchParam: "city",
       isLoading: true,
-      currentWeatherError: null,
       forecastError: null,
       isBusy: false,
       options: {
@@ -151,44 +128,20 @@ export default {
         }
       ],
       lineChartData: {},
-      barChartData: {},
-      currentWeather: {},
-      city: String,
-      history: []
+      barChartData: {}
     }
   },
   methods:  {
-    fetcWeather() {
+    fetchData() {
       this.isLoading = true;
       this.isBusy = true
       this.forecastError = null
-      this.currentWeatherError = null
-
-      httpService.get(`weather/current?${this.searchParam}=${this.searchValue}`)
-                 .then(response => {       
-        this.currentWeather = response.data || []
-        this.currentWeatherError = null
-        
-      })
-      .catch(error => {
-        console.log(error)
-        this.isLoading = false
-        this.currentWeatherError = error;
-      });
          
-      httpService.get(`weather/forecast?${this.searchParam}=${this.searchValue}`)
+      httpService.get(`weather/forecast?${this.search.type}=${this.search.value}`)
                  .then(response => {  
-        this.city = response.data.city           
+       
         this.items = response.data.days || []
         this.updateChart(response); 
-        
-        this.history = [{
-          city: this.city,
-          temperature: this.currentWeather.temperature,
-          humidity: this.currentWeather.humidity
-        },...this.history ]
-        localStorage.setItem('history', JSON.stringify(this.history));
-        this.$emit('update-history', {})
 
         this.isLoading = false
         this.isBusy = false
@@ -221,18 +174,6 @@ export default {
           return "Unknown"
       }
     },
-    updateSearchCityValue(newValue) {
-      this.searchCityValue = newValue
-      this.searchValue = newValue
-      this.searchParam = 'city'
-      this.fetcWeather()
-    },
-    updateSearchZipCodeValue(newValue) {
-      this.searchZipCodeValue = newValue
-      this.searchValue = newValue
-      this.searchParam = 'zipCode'
-      this.fetcWeather()
-    },
     updateChart(response) {
       var legendData = response.data.days.map(day => this.dayFormatter(new Date(day.atDateTime).getDay()))
           
@@ -260,11 +201,7 @@ export default {
     }
   },
   mounted: function () {
-    if (JSON.parse(localStorage.getItem('history')).length != 0) {
-       this.history = JSON.parse(localStorage.getItem('history'))
-    }
-
-    this.fetcWeather()
+    this.fetchData()
   }
 }
 </script>
@@ -284,18 +221,5 @@ li {
 }
 a {
   color: #42b983;
-}
-
-#temperature {
-  font-size: 52px;
-  position: relative;
-  right: 10px;
-}
-
-.temp-scale {
-  font-size: 24px;
-  position: relative;
-  bottom: 20px;
-  right: 15px;
 }
 </style>

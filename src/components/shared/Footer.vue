@@ -17,7 +17,7 @@
             <div class="col-md-4 mb-1">
                 <div class="p-3 footer-card">
                     <h6 class="text-uppercase mb-2">Find this app on GitHub</h6>
-                    <p class="text-center mb-0">Web API (C#) repository <a href="https://github.com/nikolabojkovic/weatherapp">source code</a></p>
+                    <p class="text-center mb-0">Web API (.NET Core) repository <a href="https://github.com/nikolabojkovic/weatherapp">source code</a></p>
                     <p class="text-center mb-0">SPA (VueJs) repository <a href="https://github.com/nikolabojkovic/WeatherApi">source code</a></p>
                 </div>
             </div>  
@@ -44,15 +44,17 @@ export default {
         color: white;
     }
 
-    .footer-content .row {
-        font-size: 16px;
-    }
-
     .footer-content h6{
         font-size: 18px;
         font-weight: 900;
         border-bottom: 1px solid white;
         padding-bottom: 5px;
+    }
+
+    .footer-card {
+        background-color: #45a7e7;
+        border-radius: 4px;
+        font-size: 16px;
     }
 
     .copyright {
@@ -67,10 +69,5 @@ export default {
         color: white;
         font-weight: bolder;
         text-decoration: none;
-    }
-
-    .footer-card {
-        background-color: #45a7e7;
-        border-radius: 4px;
     }
 </style>
