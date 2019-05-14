@@ -1,18 +1,18 @@
 <template>
-
     <div class="wrapper" v-show="show">
-        <transition name="slide-toggle">
         <!-- Sidebar -->
         <nav id="sidebar" class="container-fluid">
             <div class="row sidebar-header pt-3">
                 <h3 class="col-12 text-center">History</h3>
             </div>
             <div class="row separator ml-4 mb-3"></div>
+            <div v-if="history.length <= 0">No data</div> 
             <div id="history" class="history">
                 <div class="history-item row" v-bind:key="index" v-for="(item, index) in history">
                     <div class="city float-left">{{ item.city }}</div>
                     <div class="city-details">
-                        <div class="title"> {{ Math.round(item.temperature) }} °C </div>
+                        <div class="title">{{ Math.round(item.temperature) }}<span class="history-temp-scale">°C</span>
+                        </div>
                         <div class="subtitle"> Humidity: {{ item.humidity }} %</div>
                     </div>                    
                 </div>
@@ -21,11 +21,9 @@
                 <div class="col-12 pl-4 pr-4">
                     <b-button @click="clearHistory" block size="sm" variant="light">Clear</b-button>
                 </div>
-            </div>           
+            </div>     
         </nav>
-        </transition>
     </div>
-
 </template>
 <script>
 
@@ -79,6 +77,9 @@ export default {
     z-index: 999;
     background: #64befa;
     color: #fff;
+    -webkit-transition: width 2s, height 4s; /* For Safari 3.1 to 6.0 */
+    transition: width 2s, height 4s;
+    overflow: scroll;
 }
 
 #sidebar a {
@@ -90,21 +91,6 @@ export default {
     width: 80%;
 }
 
-.slide-toggle-enter-active,
-.slide-toggle-leave-active {
-     transition: width 2s;
-     -webkit-transition: width 2s;
-}
-.slide-toggle-enter-active {
-     width: 300px;
-}
-.slide-toggle-enter,
-.slide-toggle-leave-active {
-    width: 0px;
-}
-.slide-toggle-leave {
-    width: 0px;
-} 
 
 .history {
     overflow-y: scroll;
@@ -133,4 +119,11 @@ export default {
     display: block;
     font-size: 11px;
 }
+
+.history-temp-scale {
+    font-size: 11px;
+    position: relative;
+    bottom: 7px;
+    right: 0px;
+  }
 </style>
