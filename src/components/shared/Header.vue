@@ -21,13 +21,16 @@ export default {
   name: 'Header',
   data() {
       return { 
-          togglePressed: false
+      }
+  },
+  computed: {
+      toggleState() {
+          return this.$store.state.sideBarVisible
       }
   },
   methods: {
       toggle() {
-          this.togglePressed = !this.togglePressed;
-          this.$emit('toggle-button-pressed', this.togglePressed)
+          this.$store.commit('toggleSidebar')
       }
   }
 }

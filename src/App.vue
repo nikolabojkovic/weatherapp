@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="container-fluid">
-    <Header @toggle-button-pressed="toggle"/>
-    <Sidebar :toggle="toggleSidebar"/>
+    <Header />
+    <Sidebar />
     <WeatherForm :value="searchCityValue" 
                  @updated-input-value="updateSearchCityValue"
                  placeholder="Enter city name"
@@ -37,7 +37,6 @@ export default {
   store,
   data() {
     return {
-      toggleSidebar: false,
       searchCityValue: "London",
       searchZipCodeValue: "81925,de",
       search: {
@@ -55,9 +54,6 @@ export default {
     Sidebar
   },
   methods: {
-    toggle(toggleEvent) {
-      this.toggleSidebar = toggleEvent
-    },
     updateSearchCityValue(newValue) {
       this.searchCityValue = newValue
       this.search = {

@@ -7,6 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    sideBarVisible: false,
     history: []
   },
   mutations: {
@@ -35,6 +36,9 @@ export default new Vuex.Store({
         }
 
         state.history = historyFromStorage
+    },
+    toggleSidebar(state) {
+        state.sideBarVisible = !state.sideBarVisible
     }
   }
 })

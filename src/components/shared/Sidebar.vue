@@ -30,11 +30,9 @@
 export default {
   name: 'Sidebar',
   props: {
-      toggle: Boolean
   },
   data() {
       return { 
-          show: this.toggle
       }
   },
   watch: {
@@ -53,6 +51,9 @@ export default {
   computed: {
     history () {
       return this.$store.state.history
+    },
+    show() {
+        return this.$store.state.sideBarVisible
     }
   },
   mounted: function () {    

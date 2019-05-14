@@ -1,9 +1,7 @@
 <template>
-<div class="conteiner">
+<div class="container">
     <div class="row">
-        <div class="col-md-3">
-
-        </div>
+        <div class="col-md-3"></div>
         <div class="col-md-6">
             <b-input-group class="mt-2">
                 <b-form-input v-model="inputValue" :placeholder="inputPlaceholder"></b-form-input>
@@ -12,10 +10,7 @@
                 </b-input-group-append>
             </b-input-group>
         </div>
-        <div class="col-md-3">
-
-        </div>
-        
+        <div class="col-md-3"></div>        
     </div>
 </div>
 </template>
