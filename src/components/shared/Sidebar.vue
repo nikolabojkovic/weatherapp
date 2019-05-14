@@ -9,7 +9,7 @@
             </div>
             <div class="row separator ml-4 mb-3"></div>
             <div id="history" class="history">
-                <div class="history-item row" v-bind:key="index" v-for="(item, index) in historyValues">
+                <div class="history-item row" v-bind:key="index" v-for="(item, index) in history">
                     <div class="city float-left">{{ item.city }}</div>
                     <div class="city-details">
                         <div class="title"> {{ Math.round(item.temperature) }} °C </div>
@@ -28,35 +28,38 @@
 
 </template>
 <script>
+
 export default {
   name: 'Sidebar',
   props: {
-      toggle: Boolean,
-      history: Array 
+      toggle: Boolean
   },
   data() {
       return { 
-          show: this.toggle,
-          historyValues: []
+          show: this.toggle
       }
   },
   watch: {
     toggle: function(val) {
       this.show = val
-    },
-    history: function(val) {
-      this.historyValues = val
     }
   },
   methods: {
-      clearHistory() {
-          localStorage.removeItem('history')
-          this.historyValues = []
-          this.$emit('update-history', {})
-      }
+    clearHistory() {
+        this.$store.commit('claerHistory')
+    },
+    resize() {
+        document.getElementById('history').style.height = (screen.height - 280) + 'px'
+    }
   },
-  mounted: function () {
-    document.getElementById('history').style.height = (screen.height - 300) + 'px'
+  computed: {
+    history () {
+      return this.$store.state.history
+    }
+  },
+  mounted: function () {    
+    this.resize()
+    window.onresize = this.resize
   }
 }
 </script>

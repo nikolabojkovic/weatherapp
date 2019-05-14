@@ -33,7 +33,6 @@ export default {
           isLoading: Boolean,
           currentWeather: {},
           currentWeatherError: null,
-          history: []
       }
   },
   props: {
@@ -55,13 +54,7 @@ export default {
           this.currentWeather = response.data || []
           this.currentWeatherError = null   
 
-          this.history = [{
-            city: this.currentWeather.cityName,
-            temperature: this.currentWeather.temperature,
-            humidity: this.currentWeather.humidity
-          }, ...this.getHistory() ]
-          localStorage.setItem('history', JSON.stringify(this.history));
-          this.$emit('update-history', {})  
+          this.$store.commit('updateHistory', this.currentWeather)
 
           this.isLoading = false
       })
@@ -70,17 +63,15 @@ export default {
           this.isLoading = false
           this.currentWeatherError = error;
       });
-    },
-    getHistory() {
-      if (localStorage.getItem('history') != null && JSON.parse(localStorage.getItem('history')).length != 0) {
-        return JSON.parse(localStorage.getItem('history'))
-      }
-
-      return []
+    }
+  },
+  computed: {
+    history () {
+      return this.$store.state.history
     }
   },
   mounted() {
-    this.history = this.getHistory()
+
   }
 }
 </script>

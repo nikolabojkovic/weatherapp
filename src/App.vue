@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="container-fluid">
     <Header @toggle-button-pressed="toggle"/>
-    <Sidebar :toggle="toggleSidebar" :history="history"/>
+    <Sidebar :toggle="toggleSidebar"/>
     <WeatherForm :value="searchCityValue" 
                  @updated-input-value="updateSearchCityValue"
                  placeholder="Enter city name"
@@ -10,7 +10,7 @@
                  @updated-input-value="updateSearchZipCodeValue"
                  placeholder="Enter zip and country code"
                  buttonText="Search by zip code"/>
-    <CurrentWeather :search="search" @update-history="updateHistory" />
+    <CurrentWeather :search="search"/>
     <Forecast :search="search"/>
     <Footer/>
   </div>
@@ -28,15 +28,16 @@ import Footer from './components/shared/Footer.vue'
 import Sidebar from './components/shared/Sidebar.vue'
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
+import store from './store/Store.vue'
 
 Vue.use(BootstrapVue)
 
 export default {
   name: 'app',
+  store,
   data() {
     return {
       toggleSidebar: false,
-      history: [],
       searchCityValue: "London",
       searchZipCodeValue: "81925,de",
       search: {
@@ -57,9 +58,6 @@ export default {
     toggle(toggleEvent) {
       this.toggleSidebar = toggleEvent
     },
-    updateHistory() {
-      this.history = JSON.parse(localStorage.getItem('history'))
-    },
     updateSearchCityValue(newValue) {
       this.searchCityValue = newValue
       this.search = {
@@ -77,7 +75,7 @@ export default {
   },
   mounted() {
     this.updateSearchCityValue('London')
-    console.log(process.env.VUE_APP_API_URL)
+    this.$store.commit('initHistory')
   }
 }
 </script>
