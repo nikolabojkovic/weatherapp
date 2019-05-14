@@ -47,7 +47,7 @@ import Spinner from './shared/Spinner.vue'
 import LineChart from './chart/LineChart.vue'
 import BarChart from './chart/BarChart.vue'
 
-import httpService from '../shared/services/httpService'
+import api from '../shared/services/api'
 
 export default {
   name: 'Forecast',
@@ -55,15 +55,6 @@ export default {
     Spinner,
     LineChart,
     BarChart
-  },
-  props: {
-     search: { }
-  },
-  watch: {
-    search: function(val) {
-      this.search = val
-     this.fetchData()
-    }
   },
   data () {
     return { 
@@ -136,8 +127,7 @@ export default {
       this.isLoading = true;
       this.isBusy = true
       this.forecastError = null
-         
-      httpService.get(`weather/forecast?${this.search.type}=${this.search.value}`)
+      api.get(`weather/forecast?${this.search.type}=${this.search.value}`)
                  .then(response => {  
        
         this.items = response.data.days || []
@@ -200,8 +190,13 @@ export default {
           }
     }
   },
+  computed: {
+    search() {
+      return this.$store.state.search
+    }
+  },
   mounted: function () {
-
+    this.fetchData()
   }
 }
 </script>

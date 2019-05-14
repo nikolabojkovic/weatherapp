@@ -18,20 +18,26 @@
 export default {
   name: 'WeatherForm',
   props: {
+      type: String,
       value: String,
       placeholder: String,
       buttonText: String
   },
   data() {
       return {
-       inputValue: this.value,
        inputPlaceholder: this.placeholder,
-       submitText: this.buttonText
+       submitText: this.buttonText,
+       inputValue: this.value
       }
   },
   methods: {
       submit() {
-          this.$emit('updated-input-value', this.inputValue)
+          var search = {
+              type: this.type,
+              value: this.inputValue
+          }
+          this.$store.commit('updateSearchValue', search)
+          this.$emit('searchSubmitted', {})
       }
   }
 }

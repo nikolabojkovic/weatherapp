@@ -8,7 +8,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     sideBarVisible: false,
-    history: []
+    history: [],
+    search: {
+        type: 'city',
+        value: 'London'
+    }
   },
   mutations: {
     updateHistory (state, currentWeather) {
@@ -39,6 +43,9 @@ export default new Vuex.Store({
     },
     toggleSidebar(state) {
         state.sideBarVisible = !state.sideBarVisible
+    },
+    updateSearchValue(state, search) {
+      state.search = search
     }
   }
 })

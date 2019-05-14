@@ -20,7 +20,7 @@
 </template>
 <script>
 
-import httpService from '../shared/services/httpService'
+import api from '../shared/services/api'
 import Spinner from './shared/Spinner'
 
 export default {
@@ -35,21 +35,12 @@ export default {
           currentWeatherError: null,
       }
   },
-  props: {
-    search: {}
-  },
-  watch: {
-    search: function(val) {
-      this.search = val
-      this.fetchData()
-    }
-  },
   methods: {
     fetchData() {
       this.currentWeatherError = null
       this.isLoading = true;
 
-      httpService.get(`weather/current?${this.search.type}=${this.search.value}`)
+      api.get(`weather/current?${this.search.type}=${this.search.value}`)
                   .then(response => { 
           this.currentWeather = response.data || []
           this.currentWeatherError = null   
@@ -68,10 +59,13 @@ export default {
   computed: {
     history () {
       return this.$store.state.history
+    },
+    search() {
+      return this.$store.state.search
     }
   },
   mounted() {
-
+    this.fetchData()
   }
 }
 </script>

@@ -59,6 +59,7 @@ export default {
   mounted: function () {    
     this.resize()
     window.onresize = this.resize
+    this.$store.commit('initHistory')
   }
 }
 </script>

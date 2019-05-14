@@ -2,17 +2,19 @@
   <div id="app" class="container-fluid">
     <Header />
     <Sidebar />
-    <WeatherForm :value="searchCityValue" 
-                 @updated-input-value="updateSearchCityValue"
+    <WeatherForm @searchSubmitted="search"
+                 value="London"
+                 type="city"
                  placeholder="Enter city name"
                  buttonText="Search by city"/>
-    <WeatherForm :value="searchZipCodeValue" 
-                 @updated-input-value="updateSearchZipCodeValue"
+    <WeatherForm @searchSubmitted="search"
+                 value="81925,de"
+                 type='zipCode'
                  placeholder="Enter zip and country code"
                  buttonText="Search by zip code"/>
-    <CurrentWeather :search="search"/>
-    <Forecast :search="search"/>
-    <Footer/>
+    <CurrentWeather ref="currentWeather"  />
+    <Forecast ref="forecast" type='city'/>
+    <Footer type='zipCode'/>
   </div>
 </template>
 
@@ -35,16 +37,6 @@ Vue.use(BootstrapVue)
 export default {
   name: 'app',
   store,
-  data() {
-    return {
-      searchCityValue: "London",
-      searchZipCodeValue: "81925,de",
-      search: {
-        type: '',
-        value: ''
-      }
-    }
-  },
   components: {
     WeatherForm,
     CurrentWeather,
@@ -54,24 +46,10 @@ export default {
     Sidebar
   },
   methods: {
-    updateSearchCityValue(newValue) {
-      this.searchCityValue = newValue
-      this.search = {
-        type: 'city',
-        value: newValue
-      }
-    },
-    updateSearchZipCodeValue(newValue) {
-      this.searchZipCodeValue = newValue
-      this.search = {
-        type: 'zipCode',
-        value: newValue
-      }
-    },
-  },
-  mounted() {
-    this.updateSearchCityValue('London')
-    this.$store.commit('initHistory')
+    search() {
+      this.$refs.forecast.fetchData()
+      this.$refs.currentWeather.fetchData()
+    }
   }
 }
 </script>
