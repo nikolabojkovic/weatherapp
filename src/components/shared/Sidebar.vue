@@ -56,7 +56,7 @@ export default {
       }
   },
   mounted: function () {
-    document.getElementById('history').style.height = (screen.height - 150) + 'px'
+    document.getElementById('history').style.height = (screen.height - 300) + 'px'
   }
 }
 </script>

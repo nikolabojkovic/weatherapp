@@ -201,7 +201,7 @@ export default {
     }
   },
   mounted: function () {
-    this.fetchData()
+
   }
 }
 </script>

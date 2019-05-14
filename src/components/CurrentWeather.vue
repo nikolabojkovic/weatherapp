@@ -81,7 +81,6 @@ export default {
   },
   mounted() {
     this.history = this.getHistory()
-    this.fetchData()
   }
 }
 </script>

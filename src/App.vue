@@ -40,8 +40,8 @@ export default {
       searchCityValue: "London",
       searchZipCodeValue: "81925,de",
       search: {
-        type: 'city',
-        value: 'London'
+        type: '',
+        value: ''
       }
     }
   },
@@ -74,6 +74,10 @@ export default {
         value: newValue
       }
     },
+  },
+  mounted() {
+    this.updateSearchCityValue('London')
+    console.log(process.env.VUE_APP_API_URL)
   }
 }
 </script>

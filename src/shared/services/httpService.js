@@ -1,8 +1,7 @@
 import axios from 'axios'
-import config from '../../../public/config'
 
 export default axios.create({
-  baseURL: config.apiUrl,
+  baseURL: process.env.VUE_APP_API_URL,
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",
