@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export default axios.create({
   baseURL: process.env.VUE_APP_API_URL,
-  timeout: 5000,
+  timeout: process.env.VUE_APP_API_TIMEOUT,
   headers: {
     "Content-Type": "application/json",
     'Cache-Control': 'no-cache',

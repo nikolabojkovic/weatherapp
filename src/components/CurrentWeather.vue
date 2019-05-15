@@ -40,8 +40,7 @@ export default {
       this.currentWeatherError = null
       this.isLoading = true;
 
-      api.get(`weather/current?${this.search.type}=${this.search.value}`)
-                  .then(response => { 
+      api.get(`weather/current?${this.search.type}=${this.search.value}`).then(response => { 
           this.currentWeather = response.data || []
           this.currentWeatherError = null   
 

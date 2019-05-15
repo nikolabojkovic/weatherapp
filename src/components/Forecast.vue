@@ -127,8 +127,7 @@ export default {
       this.isLoading = true;
       this.isBusy = true
       this.forecastError = null
-      api.get(`weather/forecast?${this.search.type}=${this.search.value}`)
-                 .then(response => {  
+      api.get(`weather/forecast?${this.search.type}=${this.search.value}`).then(response => {  
        
         this.items = response.data.days || []
         this.updateChart(response); 
