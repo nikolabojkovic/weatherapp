@@ -1,8 +1,9 @@
 <template>
   <div> 
-    <h4 class="mt-4 mb-4 text-uppercase">Current weather <span v-if="!isLoading && !currentWeatherError">{{ this.currentWeather.cityName }}</span> </h4>
+    <h4 class="mt-4 mb-4 text-uppercase">Current weather </h4>
     <Spinner v-if="isLoading" text="Loading current weather..."/>
     <div id="current-weather" v-if="!isLoading && !currentWeatherError">
+      <h4 class="text-uppercase font-weight-bolder">{{ this.currentWeather.cityName }}</h4>
       <div class="temp-container">
         <img width="170" height="170" v-bind:src="'http://openweathermap.org/img/w/' + currentWeather.icon + '.png'"/>
         <span id="temperature">
