@@ -16,7 +16,7 @@
         <div>Wind speed {{ this.currentWeather.windSpeed }} m/s </div>
       </div>
     </div>
-    <div v-if="currentWeatherError">No data</div>
+    <div v-if="currentWeatherError">{{ currentWeatherError.message }}</div>
   </div>
 </template>
 <script>
@@ -50,16 +50,13 @@ export default {
           this.isLoading = false
       })
       .catch(error => {
-          console.log(error)
+          console.log(error.response.data)
           this.isLoading = false
-          this.currentWeatherError = error;
+          this.currentWeatherError = error.response.data;
       });
     }
   },
   computed: {
-    history () {
-      return this.$store.state.history
-    },
     search() {
       return this.$store.state.search
     }

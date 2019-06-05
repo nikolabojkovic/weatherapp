@@ -3,12 +3,23 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <b-input-group class="mt-2">
-                <b-form-input v-model="inputValue" :placeholder="inputPlaceholder"></b-form-input>
-                <b-input-group-append>
-                <b-button class="custom-button" v-on:click="submit">{{ this.submitText }}</b-button>
-                </b-input-group-append>
-            </b-input-group>
+            <div class="row">
+                <b-input-group class="mt-2">
+                    <b-form-input type="text" 
+                                v-model="inputValue" 
+                                :placeholder="inputPlaceholder"
+                                v-on:keyup="clearErrors"
+                                v-bind:class="{ 'border-danger': errors.length > 0 }"></b-form-input>
+                    <b-input-group-append>
+                        <b-button class="custom-button" v-on:click="submit">{{ this.submitText }}</b-button>
+                    </b-input-group-append>
+                </b-input-group>
+            </div>
+            <div class="row">
+                <ul class="text-left text-danger">
+                    <li v-bind:key="error" v-for="error in errors">{{ error }}</li>
+                </ul>
+            </div>
         </div>
         <div class="col-md-3"></div>        
     </div>
@@ -27,17 +38,33 @@ export default {
       return {
        inputPlaceholder: this.placeholder,
        submitText: this.buttonText,
-       inputValue: this.value
+       inputValue: this.value,
+       errors: []
       }
   },
   methods: {
+      formValid() {
+            this.errors = []
+            if (!this.inputValue) {
+                this.errors.push(`${this.type.charAt(0).toUpperCase()}${this.type.slice(1)} is required.`);
+                return false;
+            }
+
+            return true;
+      },
       submit() {
+          if (!this.formValid())
+            return;
+
           var search = {
               type: this.type,
               value: this.inputValue
           }
           this.$store.commit('updateSearchValue', search)
           this.$emit('searchSubmitted', {})
+      },
+      clearErrors() {
+          this.errors = []
       }
   }
 }
@@ -51,5 +78,9 @@ export default {
     .custom-button:active {
         background-color: #3d96d1 !important;
         border-color: #3d96d1 !important;
+    }
+
+    .border-danger {
+        border-color: #dc3545;
     }
 </style>

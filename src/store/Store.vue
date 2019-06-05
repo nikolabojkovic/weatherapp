@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    sideBarVisible: false,
+    isSideBarVisible: false,
     history: [],
     search: {
         type: 'city',
@@ -42,7 +42,7 @@ export default new Vuex.Store({
         state.history = historyFromStorage
     },
     toggleSidebar(state) {
-        state.sideBarVisible = !state.sideBarVisible
+        state.isSideBarVisible = !state.isSideBarVisible
     },
     updateSearchValue(state, search) {
       state.search = search

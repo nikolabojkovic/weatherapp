@@ -23,11 +23,6 @@ export default {
       return { 
       }
   },
-  computed: {
-      toggleState() {
-          return this.$store.state.sideBarVisible
-      }
-  },
   methods: {
       toggle() {
           this.$store.commit('toggleSidebar')

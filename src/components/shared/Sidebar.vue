@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper" v-show="show">
+    <div class="wrapper" v-show="isVisible">
         <!-- Sidebar -->
         <nav id="sidebar" class="container-fluid">
             <div class="row sidebar-header pt-3">
@@ -29,16 +29,9 @@
 
 export default {
   name: 'Sidebar',
-  props: {
-  },
   data() {
       return { 
       }
-  },
-  watch: {
-    toggle: function(val) {
-      this.show = val
-    }
   },
   methods: {
     clearHistory() {
@@ -52,8 +45,8 @@ export default {
     history () {
       return this.$store.state.history
     },
-    show() {
-        return this.$store.state.sideBarVisible
+    isVisible() {
+        return this.$store.state.isSideBarVisible
     }
   },
   mounted: function () {    

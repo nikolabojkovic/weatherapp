@@ -37,7 +37,7 @@
             <BarChart id="forecast-humidity-chart" :chartdata="barChartData" :options="options"/>
         </div>
       </div>
-      <div><div v-if="forecastError">No data</div></div>
+      <div v-if="forecastError">{{ forecastError.message }}</div>
     </div>
   </div>
 </template>
@@ -137,10 +137,10 @@ export default {
         this.forecastError = null;
       })
       .catch(error => {
-        console.log(error)
+        console.log(error.response.data)
         this.isLoading = false
         this.isBusy = false
-        this.forecastError = error
+        this.forecastError = error.response.data
       })
     },
     dayFormatter(indexOfDay) {
