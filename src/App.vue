@@ -5,11 +5,13 @@
     <WeatherForm @searchSubmitted="search"
                  value="London"
                  type="city"
+                 name="City"
                  placeholder="Enter city name"
                  buttonText="Search by city"/>
     <WeatherForm @searchSubmitted="search"
                  value="81925,de"
                  type='zipCode'
+                 name='Zip code'
                  placeholder="Enter zip and country code"
                  buttonText="Search by zip code"/>
     <CurrentWeather ref="currentWeather"  />

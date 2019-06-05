@@ -30,6 +30,7 @@ export default {
   name: 'WeatherForm',
   props: {
       type: String,
+      name: String,
       value: String,
       placeholder: String,
       buttonText: String
@@ -46,7 +47,7 @@ export default {
       formValid() {
             this.errors = []
             if (!this.inputValue) {
-                this.errors.push(`${this.type.charAt(0).toUpperCase()}${this.type.slice(1)} is required.`);
+                this.errors.push(`${this.name.charAt(0).toUpperCase()}${this.name.slice(1)} is required.`);
                 return false;
             }
 
