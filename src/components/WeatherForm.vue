@@ -47,7 +47,7 @@ export default {
       formValid() {
             this.errors = []
             if (!this.inputValue) {
-                this.errors.push(`${this.name.charAt(0).toUpperCase()}${this.name.slice(1)} is required.`);
+                this.errors.push(`${this.name} is required.`);
                 return false;
             }
 
