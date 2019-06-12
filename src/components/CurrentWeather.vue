@@ -50,7 +50,6 @@ export default {
           this.isLoading = false
       })
       .catch(error => {
-          console.log(error.response.data)
           this.isLoading = false
           this.currentWeatherError = error.response.data;
       });

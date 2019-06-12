@@ -57,7 +57,10 @@ export default new Vuex.Store({
       commit('toggleSidebarState')
     },
     updateSearch({commit}, search) {
-      commit('updateSearchValue', search)
+      return new Promise((resolve) => {
+        commit('updateSearchValue', search)
+        resolve()
+      })
     }
   }
 })

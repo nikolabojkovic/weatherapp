@@ -61,8 +61,9 @@ export default {
               type: this.type,
               value: this.inputValue
           }
-          this.$store.dispatch('updateSearch', search)
-          this.$emit('searchSubmitted', {})
+          this.$store.dispatch('updateSearch', search).then(() => { 
+            this.$emit('searchSubmitted', {})
+          })
       },
       clearErrors() {
           this.errors = []

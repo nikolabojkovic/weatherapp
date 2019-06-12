@@ -137,7 +137,6 @@ export default {
         this.forecastError = null;
       })
       .catch(error => {
-        console.log(error.response.data)
         this.isLoading = false
         this.isBusy = false
         this.forecastError = error.response.data
