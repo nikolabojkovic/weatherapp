@@ -45,7 +45,7 @@ export default {
           this.currentWeather = response.data || []
           this.currentWeatherError = null   
 
-          this.$store.commit('updateHistory', this.currentWeather)
+          this.$store.dispatch('updateHistory', this.currentWeather)
 
           this.isLoading = false
       })

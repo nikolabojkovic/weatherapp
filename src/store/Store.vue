@@ -15,37 +15,49 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    updateHistory (state, currentWeather) {
-        var historyFromStorage = []
+    loadHistory(state) {
         if (localStorage.getItem('history') != null && JSON.parse(localStorage.getItem('history')).length != 0) {
-            historyFromStorage = JSON.parse(localStorage.getItem('history'))
+            state.history = JSON.parse(localStorage.getItem('history'))
         }
-
+    },
+    updateHistory (state, currentWeather) {
         state.history = [{
             city: currentWeather.cityName,
             temperature: currentWeather.temperature,
             humidity: currentWeather.humidity
-        }, ...historyFromStorage]
-
-       localStorage.setItem('history', JSON.stringify(state.history));
+        }, ...state.history]
+    },
+    saveHistory(state) {
+      localStorage.setItem('history', JSON.stringify(state.history))
     },
     claerHistory (state) {
         state.history = []
         localStorage.removeItem('history')
     },
-    initHistory(state) {
-        var historyFromStorage = []
-        if (localStorage.getItem('history') != null && JSON.parse(localStorage.getItem('history')).length != 0) {
-            historyFromStorage = JSON.parse(localStorage.getItem('history'))
-        }
-
-        state.history = historyFromStorage
-    },
-    toggleSidebar(state) {
+    toggleSidebarState(state) {
         state.isSideBarVisible = !state.isSideBarVisible
     },
     updateSearchValue(state, search) {
       state.search = search
+    }
+  },
+  actions: {
+    initHistory({commit}) {
+      commit('loadHistory')
+    },
+    updateHistory({commit}, currentWeather) {
+      commit('loadHistory')
+      commit('updateHistory', currentWeather)
+      commit('saveHistory') 
+    },
+    claerHistory({commit}) {
+      commit('claerHistory')
+    },
+    toggleSidebar({commit}) {
+      commit('toggleSidebarState')
+    },
+    updateSearch({commit}, search) {
+      commit('updateSearchValue', search)
     }
   }
 })

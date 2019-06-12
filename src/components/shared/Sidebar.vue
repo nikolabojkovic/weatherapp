@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     clearHistory() {
-        this.$store.commit('claerHistory')
+        this.$store.dispatch('claerHistory')
     },
     resize() {
         document.getElementById('history').style.height = (screen.height - 280) + 'px'
@@ -52,7 +52,7 @@ export default {
   mounted: function () {    
     this.resize()
     window.onresize = this.resize
-    this.$store.commit('initHistory')
+    this.$store.dispatch('initHistory')
   }
 }
 </script>

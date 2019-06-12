@@ -25,7 +25,7 @@ export default {
   },
   methods: {
       toggle() {
-          this.$store.commit('toggleSidebar')
+          this.$store.dispatch('toggleSidebar')
       }
   }
 }

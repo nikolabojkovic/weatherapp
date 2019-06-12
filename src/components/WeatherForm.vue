@@ -61,7 +61,7 @@ export default {
               type: this.type,
               value: this.inputValue
           }
-          this.$store.commit('updateSearchValue', search)
+          this.$store.dispatch('updateSearch', search)
           this.$emit('searchSubmitted', {})
       },
       clearErrors() {
