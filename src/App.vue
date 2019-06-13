@@ -7,13 +7,13 @@
                  type="city"
                  name="City"
                  placeholder="Enter city name"
-                 buttonText="Search by city"/>
+                 buttonText=""/>
     <WeatherForm @searchSubmitted="search"
                  value="81925,de"
                  type='zipCode'
                  name='Zip code'
                  placeholder="Enter zip and country code"
-                 buttonText="Search by zip code"/>
+                 buttonText=""/>
     <CurrentWeather ref="currentWeather"  />
     <Forecast ref="forecast" type='city'/>
     <Footer type='zipCode'/>
@@ -33,6 +33,15 @@ import Sidebar from './components/shared/Sidebar.vue'
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 import store from './store/Store.vue'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faSearch)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
 

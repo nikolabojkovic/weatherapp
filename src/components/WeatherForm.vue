@@ -11,7 +11,7 @@
                                 v-on:keyup="clearErrors"
                                 v-bind:class="{ 'border-danger': errors.length > 0 }"></b-form-input>
                     <b-input-group-append>
-                        <b-button class="custom-button" v-on:click="submit">{{ this.submitText }}</b-button>
+                        <b-button class="custom-button" v-on:click="submit">{{ this.submitText }}<font-awesome-icon icon="search" class="ml-2 mr-2" /></b-button>
                     </b-input-group-append>
                 </b-input-group>
             </div>
@@ -44,7 +44,7 @@ export default {
       }
   },
   methods: {
-      formValid() {
+      isFormValid() {
             this.errors = []
             if (!this.inputValue) {
                 this.errors.push(`${this.name} is required.`);
@@ -54,7 +54,7 @@ export default {
             return true;
       },
       submit() {
-          if (!this.formValid())
+          if (!this.isFormValid())
             return;
 
           var search = {
