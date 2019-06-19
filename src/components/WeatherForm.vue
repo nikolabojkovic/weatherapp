@@ -8,7 +8,7 @@
                     <b-form-input type="text" 
                                 v-model="inputValue" 
                                 :placeholder="inputPlaceholder"
-                                v-on:keyup="clearErrors"
+                                v-debounce="search"
                                 v-bind:class="{ 'border-danger': errors.length > 0 }"></b-form-input>
                     <b-input-group-append>
                         <b-button class="custom-button" v-on:click="submit">{{ this.submitText }}<font-awesome-icon icon="search" class="ml-2 mr-2" /></b-button>
@@ -26,6 +26,15 @@
 </div>
 </template>
 <script>
+
+import Vue from 'vue'
+import vueDebounce from 'vue-debounce'
+
+Vue.use(vueDebounce, {
+  listenTo: ['oninput', 'onkeyup'],
+  defaultTime: '1000ms'
+})
+
 export default {
   name: 'WeatherForm',
   props: {
@@ -67,6 +76,10 @@ export default {
       },
       clearErrors() {
           this.errors = []
+      },
+      search() {
+        this.clearErrors()
+        this.submit()     
       }
   }
 }
